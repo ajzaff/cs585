@@ -1,6 +1,7 @@
 import StanfordDependencies
 import simplejson
 import sys
+import json
 
 dp = StanfordDependencies.get_instance(backend='subprocess')
 
@@ -92,4 +93,4 @@ class Parser:
                 raise ValueError(result['error'])
 
 
-cp = Parser().invoke('/Users/Alan/Dropbox/UMASS Links/Senior/LING 585/project/stanford-corenlp-python')
+cp = Parser().invoke(json.load('../settings.json')['parserpath'])
