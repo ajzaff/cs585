@@ -2,6 +2,7 @@ import StanfordDependencies
 import simplejson
 import sys
 import json
+import os
 
 dp = StanfordDependencies.get_instance(backend='subprocess')
 
@@ -93,4 +94,6 @@ class Parser:
                 raise ValueError(result['error'])
 
 
-cp = Parser().invoke(json.load('../settings.json')['parserpath'])
+cp = Parser().invoke(
+    json.load(open('settings.json'))['parserpath']
+    )
