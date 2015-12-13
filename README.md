@@ -3,7 +3,16 @@ Distributional dependency semantics for CS585 Final Project
 
 ## Dependencies 
 
-This project depends on [this](https://github.com/dasmith/stanford-corenlp-python) as a CoreNLP parser server.
+This project depends on this [CoreNLP parser server](https://github.com/dasmith/stanford-corenlp-python) running on `127.0.0.1:8000`.
+
+You will need to tell this package where that is located somehow.
+Optionally add a file named `settings.json` with the following detail:
+
+```json
+{
+	"parserpath": "/Users/Alan/Dropbox/UMASS Links/Senior/LING 585/project/stanford-corenlp-python"
+}
+```
 
 It also uses [Stanford Dependencies](https://github.com/dmcc/PyStanfordDependencies).
 Get this with `pip install PyStanfordDependencies`.
