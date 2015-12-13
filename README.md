@@ -16,3 +16,9 @@ Optionally add a file named `settings.json` with the following detail:
 
 It also uses [Stanford Dependencies](https://github.com/dmcc/PyStanfordDependencies).
 Get this with `pip install PyStanfordDependencies`.
+
+## Data
+
+This project uses the [Question-Answer Dataset](http://www.cs.cmu.edu/~ark/QA-data/) from Carnegie Mellon University and the University of Pittsburgh 2010 (for academic use released under the [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/)).
+
+Machine-generated JSON dumps (constituency and dependency parses) are provided under the data/ directory.
