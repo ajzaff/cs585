@@ -10,7 +10,7 @@ Optionally add a file named `settings.json` with the following detail:
 
 ```json
 {
-	"parserpath": "/Users/Alan/Dropbox/UMASS Links/Senior/LING 585/project/stanford-corenlp-python"
+	"parserpath": "/path/to/parser/"
 }
 ```
 
