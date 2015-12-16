@@ -2,7 +2,6 @@ import StanfordDependencies
 import simplejson
 import sys
 import json
-import os
 
 dp = StanfordDependencies.get_instance(backend='subprocess')
 
@@ -56,19 +55,17 @@ class Parser:
         self._invoked = False
         self.invoke(path_to_parser)
 
-    def invoke(self, path_to_parser=None):
+    def invoke(self, path_to_parser):
         if path_to_parser:
-            try:
-                sys.path.append(path_to_parser)
-                jsonrpc = __import__('jsonrpc')
-                self._server = jsonrpc.ServerProxy(
-                    jsonrpc.JsonRpc20(),
-                    jsonrpc.TransportTcpIp(
-                        addr=("127.0.0.1", 8080),
-                        timeout=200))
-            finally:
-                self._invoked = True
-                return self
+            sys.path.append(path_to_parser)
+            jsonrpc = __import__('jsonrpc')
+            self._server = jsonrpc.ServerProxy(
+                jsonrpc.JsonRpc20(),
+                jsonrpc.TransportTcpIp(
+                    addr=("127.0.0.1", 8080),
+                    timeout=200))
+            self._invoked = True
+            return self
 
     def parse_trees(self, sents, transform=lambda s: s, filter=lambda s: True):
         """Parse a sentence into bracket notation.
