@@ -1,0 +1,3 @@
+Abstract
+
+In this project I introduce a baseline approach for question answering using probabalistic relational inference. I parse raw sentences into dependency trees and generate conjunctive logical forms using a deterministic method. These formula relate the words in a sentence.  By ingesting more sentences, we construct a weighted directed graph on which we perform the inference.
