@@ -21,7 +21,7 @@ if __name__ == '__main__':
         if not q:
             continue
         q = q[0][1].lower()
-        q_words = r_question_type.findall(q)[:2]
+        q_words = r_question_type.findall(q)[:1]
         if q_words:
             tqw = tuple(q_words)
             items.append(' '.join(tqw))
