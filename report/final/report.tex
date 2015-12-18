@@ -116,7 +116,7 @@ postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}
 
 \begin{abstract}
 
-\noindent Question answering (QA) is a notoriously difficult task, requiring massive human effort, and usually resulting in complex systems.  I introduce parsed dependency graphs to represent NL setences and develop a baseline rule-based technique for answering forms of wh-questions.  Finally, I apply my method to a portion of the academic Wikipedia dataset (Carnegie Mellon, University of Pittsburgh).  I achieve 10\% accuracy for wh-questions in the instruments section, and 5\% over all questions in that category. 
+\noindent Question answering (QA) is a notoriously difficult task, requiring massive human effort, and usually resulting in complex systems.  I introduce parsed dependency graphs to represent NL setences and develop a baseline rule-based technique for answering forms of factual-questions.  Finally, I apply my method to a portion of the academic Wikipedia dataset (Carnegie Mellon, University of Pittsburgh).  I achieve 10\% accuracy for factual-questions in the instruments section, and 5\% over all questions in that category. 
 
 \end{abstract}
 
@@ -140,13 +140,17 @@ I am using an academic Wikipeida dataset (Carnegie Mellon, University of Pittsbu
 
 \subsection{Background}
 
+\subsection{Overview}
+
+Question answering (QA) is a discipline within computer science, information retrieval (IR), and natural language processing (NLP) focused on building systems capable of answering questions posed in natural language. A QA implementation typically queries a structured database of knoweldge, or set of unstructured documents.  Systems attempt to deal gracefully with the wide range of question types such as: \textit{fact}, \textit{list}, \textit{definition}, \textit{how}, \textit{why}, \textit{hypothetical}, \textit{semantically constrained}, or \textit{cross-lingual questions}.
+
 \subsubsection{Dependency Parser}
 
 The dependency parsing turns sentences into a structed form.  A dependency parser can work as a stand alone tool, or a constituency tree conversion tool.  In this case a constituency conversion tool, Stanford Dependencies (freely available online \footnote{https://github.com/dmcc/PyStanfordDependencies}), was used.  Standard trees were generated using Stanford CoreNLP and converted using a trained model.  Since this paper is not about the process of creating dependencies we will not go over the technical details of how this is done.
 
 A dependency parse orders words in a DAG structure, such that commanding words (e.g. heads) are above their dependents (e.g. non-heads).  This can be formalized by a series of head-structure rules which is an augmentation of a CFG, also giving information about which productions are non-head and which one is a head.  Models might be trained by learning these rules and labelled examples.  Labelled arrows, then, replace trees when going from a standard constituency parse to a dependency structure.
 
-The resulting parse yields a formalism of a system of 42 universal dependency relations \footnote{http://universaldependencies.github.io/docs/u/dep/} which include nominal subjects, passive nominal subjects, compound noun phrases, adjectival modifiers, numeric modifiers, and many more.  These define relations over individual words in the parse.  Relations connect words on a syntactic level, but meaningful semantics is not hard to derive from these trees.  For example, given a parse of the sentence ``The boy fished the tank'', we can easily read from the parse who is the dooer of the action \textit{boy} (a.k.a. the agent), and who is a patient, in this case \textit{tank}.  Figure 1 shows what this looks like.
+The resulting parse yields a formalism of a system of 42 universal dependency relations \footnote{http://universaldependencies.github.io/docs/u/dep/} which include nominal subjects, passive nominal subjects, compound noun phrases, adjectival modifiers, numeric modifiers, and many more.  These define relations over individual words in the parse.  Relations connect words on a syntactic level, but meaningful semantics is not hard to derive from these trees.  For example, given a parse of the sentence ``The boy fished the tank'', we can easily read from the parse who is the dooer of the action \textit{boy} (a.k.a. the agent), and who is a patient, in this case \textit{tank}.  Figure \ref{fig:deps} shows what this looks like.
 
 \begin{figure}
 \centering
@@ -160,9 +164,14 @@ This is the basis of the representation of the question answering system.  By re
 
 \section{Related Work}
 
-\subsection{Question Answering}
+\subsection{Systems}
 
-The history of question answering efforts have used a number of techniques, including rule based systems (Riloff, et. al., 2000 \cite{ril00}), machine-translation (Bao, et. al., 2014 \cite{bao14}), or hybrids (Pakray, et. al., 2014 \cite{pak11}). However, lately dependency parses have dominated many question answering tasks.  Knowledge based systems exist (Hermjakob, et. al., \cite{her02}, and information retrieval is also a relative facet of study since many systems including this one use it as their main modus operandi (i.e. searching semi-structured documents).
+Most successful examples of question answering systems have closed-domains.  These systems become expert savants on a single topic (e.g. medicine, baseball, etc.).  They ingest documents, learn structured databases, and ontologies which define all of the words in the target domain.  Other closed-domain systems restrict the types of questions which may be asked.  A prominent intersection between these categories are intelligent smart phone assistants such as \textit{Siri}, or \textit{Ok, Google}.  In contrast, open-domain QA can deal with any subject or possible type of question.  For such a system to be successful, it must ingest many documents from many distinct sources. A prominent example of such a system was IBM's Jeoparody!-playing computer \textit{Watson}, and even this was extremely complicated, and took years of engineering.  \textit{Watson} is currently being applied to medical informatics domains, where it has more practical uses.
+
+
+\subsection{Research}
+
+The history of question answering research efforts have used a number of techniques, including rule based systems (Riloff, et. al., 2000 \cite{ril00}), machine-translation (Bao, et. al., 2014 \cite{bao14}), or hybrids (Pakray, et. al., 2014 \cite{pak11}). However, lately dependency parses have dominated many question answering tasks.  Knowledge based systems exist (Hermjakob, et. al., \cite{her02}, and information retrieval is also a relative facet of study since many systems including this one use it as their main modus operandi (i.e. searching semi-structured documents).
 
 \subsubsection{Dependency N-grams}
 
@@ -223,7 +232,14 @@ I use the following regular expression
 \end{split}
 \end{equation}
 
-To find all question and tense words (including \textit{many}) in a question.  It's imperfect but it works fairly well at making a rough question class clustering.  I limit the results to find two such question and tense words for each question type.  This expression yields dozens of question types, the top 10 of which are displayed in Figure \ref{fig:qtypes} and Figure \ref{fig:whatqs}.
+To find all question and tense words (including \textit{many}) in a question.  It's imperfect but it works fairly well at making a rough question class clustering.  I limit the results to find two such question and tense words for each question type.  This expression yields dozens of question types, the top 40 of which are displayed in Figure \ref{fig:qtypes} and Figure \ref{fig:whatqs}.
+
+\subsubsection{Algorithm}
+
+\begin{figure}
+\caption{Full question type categories are generated in this way.  The regular expression in Figure \ref{eq:qre} is also used but in other aspects of generation, such as in question parsing. \label{fig:alg1}}
+\lstinputlisting{algorithms/get-question-types.py}
+\end{figure}
 
 \subsection{Selectors}
 
@@ -243,7 +259,10 @@ The patient is the object of the sentence.  It is selected after the agent so th
 
 \subsubsection{Algorithm}
 
+\begin{figure}
+\caption{This is the overall algorithm for getting distributional information about the selectors.  The step which actually sums up the values is omitted, but in implementation, it would map the question type to the three selector components. \label{fig:alg2}}
 \lstinputlisting{algorithms/learn-selectors.py}
+\end{figure}
 
 \begin{figure}
 \caption{Examples of \textit{what} questions \label{fig:whatqs}}
@@ -259,22 +278,39 @@ what's the population of kuala lumpur? & what happened in 1894? \\ \hline
 
 \subsection{IR Step}
 
+The most important step of the algorithm is Information Retrieval.  This is the part where the selectors do their work to match results in the actual corpus.  Emprical results are provided across various question types, but not for all question types, primarily because selector rules failed to fire for many question types (see Figure \ref{fig:result1}).  Secondly, it seems that many selector rules still fail to capture the full syntactic variation present in the real Wiki texts.
 
+\subsubsection{Special Treatment of Tense Questions}
+
+Tense questions are those which lack question words (`which,' `what,' `who,' etc.), having only tense words (`is,' `are,' etc.)  These are thresholded, so that if a result is found, it returns \texttt{true} and \texttt{false} otherwise.  Negations are not handled natively, unless the negations come up explicitly in the corpus.
 
 %------------------------------------------------
 
 \section{Results}
 
-I evaluated my results empirically to determine first, the quality and viability of the chosen selectors.  Then, I evaluated the actual IR step, how these selectors apply to the data to find answers.
+\subsection{Overview}
 
-\begin{figure}
+I evaluated my results empirically to determine first, the quality and viability of the chosen selectors.  Then, I evaluated the actual IR step, how these selectors apply to the data to find answers.  The results for the selector step are displayed in Figure \ref{fig:result1}.  They represent an average $(p=.46)$ for accurate selector choice, some categories even reaching perfect accuracy, some in the middle, and a few at 0.  Obviously, those question types which did not make the selector step had very slim chance of actually firing during IR (which I verified).  In the end I saw results for the highest factual questions at 10\%.  The average for all question types was 5\%.
+
+\begin{figure}[hb]
 \centering
-\caption{This graph evaluates the selectors found for each question type.  These were evaluated empirically to determine whether the query could ever possibly return results in the IR step.  This was easy to determine because sometimes (roughly half) the questions were incorrectly evaluated due to an inability to cover all question types.  In any case, the results as they stand, show that the selector generation algorithm worked best on `are,' `how many,' and `when was' questions.
+\caption{This graph evaluates the selectors found for each question type.  These were evaluated empirically to determine whether the query could ever possibly return results in the IR step.  This was easy to determine because sometimes (roughly half) the questions were incorrectly evaluated due to an inability to cover all question types.  In any case, the results as they stand, show that the selector generation algorithm worked best on `are,' `how many,' and `where is' questions.
 \label{fig:result1}}
 \includegraphics[width=400px]{figures/selector-accuracy.png}
 \end{figure}
 
 \section{Discussion}
+
+\subsection{IR Limitations}
+
+Not all questions or answers are created equal.  In natural language one can phrase things in an infinitude of different ways.  In syntactic structure alone, many variations of the above question and answer forms may be used, all refering to the same information. Morphologically, the evaluation is even more bleak; synonyms for words abound, and if no way to deal with these exist, one cannot possibly hope for a system to handle any of them.  So these two issues limit the ability of this mapping, where, although there may exist a singular semantic concepts for both question and answer, there is an infinitude of extensions of these, in practice.  Another problem is coreference, which is not handled in this system.
+
+\subsection{Future Work}
+
+This paper made an attempt at answering factual $wh$-questions using the corpus and constructed QA pairs.  Clearly, I have not come near to real QA in this paper;  this would have been an unreasonable goal.  Here are some items still reserved for future goals:
+
+\paragraph{Inference} How to make logical inferences?
+\paragraph{Learn Better} How to improve the learning step using structured probability models and machine learning?
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
