@@ -32,7 +32,6 @@ if __name__ == '__main__':
                 examples[' '.join(tqw)].append(q)
 
     counts = counts.items()
-    print(counts)
     counts = sorted(counts, key=lambda e: -e[1])
     common = counts[:40]
 

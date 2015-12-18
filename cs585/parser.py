@@ -7,6 +7,15 @@ import json
 dp = StanfordDependencies.get_instance(backend='subprocess')
 
 
+def deptoken(dl):
+    """
+    [index=1, word="was", null, tag="VBD", "VBD", null, root=0, rel="root", null, null, null]
+
+    :param dl: (list)
+    :return: (dict)
+    """
+    return {'index': dl[0], 'word': dl[1], 'tag': dl[3], 'root': dl[6], 'rel': dl[7]}
+
 def to_nltk_tree(sent):
     """Transforms a sentence to an NLTK tree.
     :param sent: (str) a bracketed parse

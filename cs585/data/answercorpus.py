@@ -22,8 +22,8 @@ def process(topic):
     f = open('data/raw/%s.txt' % topic)  # open resources
     tokenizer = tokenize(f.read())
     topic = next(tokenizer)
-    cpf = open('data/deps/%s.json' % topic, 'w')
-    dpf = open('data/cp/%s.json' % topic, 'w')
+    cpf = open('data/cp/%s.json' % topic, 'w')
+    dpf = open('data/dp/%s.json' % topic, 'w')
     cp = []
     dp = []
     i = 1
